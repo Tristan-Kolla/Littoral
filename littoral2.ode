@@ -1,40 +1,46 @@
-# littoral.ode
-
 # Helper ---------------------------------------------------------------------------
 
-maturation = (phi*J)/(1+J*J)
-logistic = r*For - b*For*For
-type3 = (h*P*For*For)/(1+kappa*For*For)
+maturation(phi,j)= (phi*j)/(1+j*j)
+type3(h,p,f,kappa)= (h*p*f*f)/(1+kappa*f*f)
+logistic(r,b,f)= r*f - b*f*f
 
 # Equations ------------------------------------------------------------------------
 
-dP/dt = maturation - (mP+mu)*P
-dFor/dt = logistic - type3 + eps*For*J
-dJ/dt = f*P - maturation - mJ*J - k*For*J - c*P*J
+PL' = maturation(phiL,JL) - (mP+mu)*PL
+FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + epsL*FL*JL
+JL' = fecL*PL - maturation(phiL,JL) - mJ*JL - kL*FL*JL - cL*PL*JL
+
+PP' = maturation(phiP,JP) - (mP+mu)*PP
+FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + epsP*FP*JP
+JP' = fecP*PP - maturation(phiP,JP) - mJ*JP - kP*FP*JP - cP*PP*JP
 
 # Parameters -----------------------------------------------------------------------
 
-param mu=0.00, mP=0.280, mJ=0.280 
-param r=0.500, b=0.050, h=1.500, kappa=0.050
-param eps=0.100, f=1.000, phi=1.000
-param k=1.000, c=0.017
+par mu = 0
+par mP=0.280, mJ=0.280
+par rL=0.500, bL=0.050, hL=1.500, kappaL=0.050
+par rP=0.500, bP=0.050, hP=1.500, kappaP=0.050
+par epsL=0.100, epsP=0.100
+par fecL=1.000, fecP=1.000
+par phiL=1.000, phiP=1.000
+par kL=1.000, kP=1.000, cL=0.017, cP=0.017
 
 # Initial conditions ---------------------------------------------------------------
 
-init P=1.0, For=0.3, J=0.8
+init PL=1.0, FL=0.3, JL=0.8
+init PP=1.0, FP=0.3, JP=0.8
+
 @ total=1000, dt=0.1, bounds=1000
 
 # plotting variables ---------------------------------------------------------------
 
-@ XP=For, YP=P, XLO=0.1, XHIGH=8, YLOW=-0.1, YHIGH=5
+@ XP=FL, YP=PL, XLO=0.1, XHIGH=8, YLOW=-0.1, YHIGH=5
 
 # Auto options ---------------------------------------------------------------------
 
 # Numeric settings
 @ DS=0.002, DSMIN=0.001, DSMAX=0.05, NMAX=500 
-# parameter ranges; the default starting  parameter for AUTO will always be the first one listed in the parameters above
 @ PARMIN=-0.25, PARMAX=0.5, NORMMAX=20
-# AUTO graphing settings
 @ AUTOXMIN=-0.2, AUTOXMAX=0.5, AUTOYMIN=-0.1, AUTOYMAX=5
 
 done
