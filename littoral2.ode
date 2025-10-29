@@ -3,20 +3,47 @@
 maturation(phi,j)= (phi*j)/(1+j*j)
 type3(h,p,f,kappa)= (h*p*f*f)/(1+kappa*f*f)
 logistic(r,b,f)= r*f - b*f*f
+sig(a)= tanh(a)
+
+fitPL(f)= (hL*f*f)/(1+kappaL*f*f) - omegap
+fitPP(f)= (hP*f*f)/(1+kappaP*f*f) - omegap
+fitFL(f,p)= (rL - bL*f) - (hL*p*f*f)/(1+kappaL*f*f) - omegaf
+fitFP(f,p)= (rP - bP*f) - (hP*p*f*f)/(1+kappaP*f*f) - omegaf
+fitJL(p,f)= (fecL*p) - mJ - kL*f - cL*p - omegaj
+fitJP(p,f)= (fecP*p) - mJ - kP*f - cP*p - omegaj
+
+emig(d,beta,alpha,win,wout)= d*(1 + beta*sig(alpha*(wout - win)))
 
 # Equations ------------------------------------------------------------------------
 
-PL' = maturation(phiL,JL) - (mP+mu)*PL + dP*(PP-PL)
-FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + epsL*FL*JL + dF*(FP-FL)
-JL' = fecL*PL - maturation(phiL,JL) - mJ*JL - kL*FL*JL - cL*PL*JL + dJ*(JP-JL)
+PL' = maturation(phiL,JL) - (mP+mu)*PL \
+      - emig(dP,betaP,alphaP, fitPL(FL), fitPP(FP))*PL \
+      + emig(dP,betaP,alphaP, fitPP(FP), fitPL(FL))*PP
 
-PP' = maturation(phiP,JP) - (mP+mu)*PP + dP*(PL-PP)
-FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + epsP*FP*JP + dF*(FL-FP)
-JP' = fecP*PP - maturation(phiP,JP) - mJ*JP - kP*FP*JP - cP*PP*JP + dJ*(JL-JP)
+FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + epsL*FL*JL \
+      - emig(dF,betaF,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL \
+      + emig(dF,betaF,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP
+
+JL' = fecL*PL - maturation(phiL,JL) - mJ*JL - kL*FL*JL - cL*PL*JL \
+      - emig(dJ,betaJ,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL \
+      + emig(dJ,betaJ,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP
+
+PP' = maturation(phiP,JP) - (mP+mu)*PP \
+      - emig(dP,betaP,alphaP, fitPP(FP), fitPL(FL))*PP \
+      + emig(dP,betaP,alphaP, fitPL(FL), fitPP(FP))*PL
+
+FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + epsP*FP*JP \
+      - emig(dF,betaF,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP \
+      + emig(dF,betaF,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL
+
+JP' = fecP*PP - maturation(phiP,JP) - mJ*JP - kP*FP*JP - cP*PP*JP \
+      - emig(dJ,betaJ,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP \
+      + emig(dJ,betaJ,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL
+
 
 # Parameters -----------------------------------------------------------------------
 
-par mu = 0
+par mu=0
 par mP=0.280, mJ=0.280
 par rL=0.500, bL=0.050, hL=1.500, kappaL=0.050
 par rP=0.500, bP=0.050, hP=1.500, kappaP=0.050
@@ -24,7 +51,11 @@ par epsL=0.100, epsP=0.100
 par fecL=1.000, fecP=1.000
 par phiL=1.000, phiP=1.000
 par kL=1.000, kP=1.000, cL=0.017, cP=0.017
-par dP=0.001, dF=0.001, dJ=0.001
+
+par dP=0.02, dF=0.02, dJ=0.02
+par betaP=0.0, betaF=0.0, betaJ=0.0
+par alphaP=5.0, alphaF=5.0, alphaJ=5.0
+par omegap=0.05, omegaf=0.05, omegaj=0.05
 
 # Initial conditions ---------------------------------------------------------------
 
