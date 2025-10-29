@@ -1,9 +1,11 @@
+
+
 # Helper ---------------------------------------------------------------------------
 
 maturation(phi,j)= (phi*j)/(1+j*j)
 type3(h,p,f,kappa)= (h*p*f*f)/(1+kappa*f*f)
 logistic(r,b,f)= r*f - b*f*f
-sig(a)= tanh(a)
+sig(a)= 1/(1+exp(-a))
 
 fitPL(f)= (hL*f*f)/(1+kappaL*f*f) - omegap
 fitPP(f)= (hP*f*f)/(1+kappaP*f*f) - omegap
@@ -12,7 +14,7 @@ fitFP(f,p)= (rP - bP*f) - (hP*p*f*f)/(1+kappaP*f*f) - omegaf
 fitJL(p,f)= (fecL*p) - mJ - kL*f - cL*p - omegaj
 fitJP(p,f)= (fecP*p) - mJ - kP*f - cP*p - omegaj
 
-emig(d,beta,alpha,win,wout)= d*(1 + beta*sig(alpha*(wout - win)))
+emig(d,beta,alpha,win,wout)= d*(sig(beta*alpha*(wout - win)))
 
 # Equations ------------------------------------------------------------------------
 
@@ -52,7 +54,7 @@ par fecL=1.000, fecP=1.000
 par phiL=1.000, phiP=1.000
 par kL=1.000, kP=1.000, cL=0.017, cP=0.017
 
-par dP=0.02, dF=0.02, dJ=0.02
+par dP=1, dF=1, dJ=1
 par betaP=0.0, betaF=0.0, betaJ=0.0
 par alphaP=5.0, alphaF=5.0, alphaJ=5.0
 par omegap=0.05, omegaf=0.05, omegaj=0.05
