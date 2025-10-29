@@ -1,3 +1,5 @@
+# Two-patch with simple diffusion. 
+
 # Helper ---------------------------------------------------------------------------
 
 maturation(phi,j)= (phi*j)/(1+j*j)
@@ -6,13 +8,13 @@ logistic(r,b,f)= r*f - b*f*f
 
 # Equations ------------------------------------------------------------------------
 
-PL' = maturation(phiL,JL) - (mP+mu)*PL
-FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + epsL*FL*JL
-JL' = fecL*PL - maturation(phiL,JL) - mJ*JL - kL*FL*JL - cL*PL*JL
+PL' = maturation(phiL,JL) - (mP+mu)*PL + dP*(PP-PL)
+FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + epsL*FL*JL + dF*(FP-FL)
+JL' = fecL*PL - maturation(phiL,JL) - mJ*JL - kL*FL*JL - cL*PL*JL + dJ*(JP-JL)
 
-PP' = maturation(phiP,JP) - (mP+mu)*PP
-FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + epsP*FP*JP
-JP' = fecP*PP - maturation(phiP,JP) - mJ*JP - kP*FP*JP - cP*PP*JP
+PP' = maturation(phiP,JP) - (mP+mu)*PP + dP*(PL-PP)
+FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + epsP*FP*JP + dF*(FL-FP)
+JP' = fecP*PP - maturation(phiP,JP) - mJ*JP - kP*FP*JP - cP*PP*JP + dJ*(JL-JP)
 
 # Parameters -----------------------------------------------------------------------
 
@@ -24,6 +26,7 @@ par epsL=0.100, epsP=0.100
 par fecL=1.000, fecP=1.000
 par phiL=1.000, phiP=1.000
 par kL=1.000, kP=1.000, cL=0.017, cP=0.017
+par dP=0.001, dF=0.001, dJ=0.001
 
 # Initial conditions ---------------------------------------------------------------
 
