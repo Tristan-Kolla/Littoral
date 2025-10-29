@@ -1,29 +1,40 @@
 # littoral.ode
 
-dP/dt = (phi*J)/(1+J*J) - (mP+mu)*P
-dFor/dt = r*For - b*For*For - (h*P*For*For)/(1+kappa*For*For) + eps*For*J
-dJ/dt = f*P - (phi*J)/(1+J*J) - mJ*J - k*For*J - c*P*J
+# Helper ---------------------------------------------------------------------------
 
-# Parameters
+maturation = (phi*J)/(1+J*J)
+logistic = r*For - b*For*For
+type3 = (h*P*For*For)/(1+kappa*For*For)
 
-param mu=0.1, mP=0.1, mJ=0.280 
-param r=0.400, b=0.050, h=1.500, kappa=0.050
+# Equations ------------------------------------------------------------------------
+
+dP/dt = maturation - (mP+mu)*P
+dFor/dt = logistic - type3 + eps*For*J
+dJ/dt = f*P - maturation - mJ*J - k*For*J - c*P*J
+
+# Parameters -----------------------------------------------------------------------
+
+param mu=0.00, mP=0.280, mJ=0.280 
+param r=0.500, b=0.050, h=1.500, kappa=0.050
 param eps=0.100, f=1.000, phi=1.000
 param k=1.000, c=0.017
 
-# Initial conditions
-init P=2.0, For=2.0, J=2.0
+# Initial conditions ---------------------------------------------------------------
 
+init P=1.0, For=0.3, J=0.8
 @ total=1000, dt=0.1, bounds=1000
 
-# plotting variables
+# plotting variables ---------------------------------------------------------------
+
 @ XP=For, YP=P, XLO=0.1, XHIGH=8, YLOW=-0.1, YHIGH=5
 
-# Auto options
+# Auto options ---------------------------------------------------------------------
+
 # Numeric settings
-@ DS=0.0005, DSMIN=0.0001, DSMAX=0.02, NMAX=800 
+@ DS=0.002, DSMIN=0.001, DSMAX=0.05, NMAX=500 
 # parameter ranges; the default starting  parameter for AUTO will always be the first one listed in the parameters above
-@ PARMIN=-0.2, PARMAX=0.5, NORMMAX=20
+@ PARMIN=-0.25, PARMAX=0.5, NORMMAX=20
 # AUTO graphing settings
 @ AUTOXMIN=-0.2, AUTOXMAX=0.5, AUTOYMIN=-0.1, AUTOYMAX=5
+
 done
