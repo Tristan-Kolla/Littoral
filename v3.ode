@@ -17,41 +17,41 @@ fitJL(p,f) = (fecL*p) - mJ - kL*f - cL*p - omegaj
 fitJP(p,f) = (fecP*p) - mJ - kP*f - cP*p - omegaj
 
 # Movement
-emig(d,beta,alpha,win,wout)= d*(sig(beta*alpha*(wout - win)))
+emig(d,toggle,alpha,win,wout)= d*(sig(toggle*alpha*(wout - win)))
 
 # -------------------------- Governing Equations ------------------------------
 
 # Adult Predator - littoral
 PL' = maturation(phiL,JL) - (mP+mu)*PL \
-      - emig(dP,betaP,alphaP, fitPL(FL), fitPP(FP))*PL \
-      + emig(dP,betaP,alphaP, fitPP(FP), fitPL(FL))*PP
+      - emig(dP,toggle,alphaP, fitPL(FL), fitPP(FP))*PL \
+      + emig(dP,toggle,alphaP, fitPP(FP), fitPL(FL))*PP
 	  
 # Forager - littoral
 FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + interact(epsL,FL,JL) \
-      - emig(dF,betaF,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL \
-      + emig(dF,betaF,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP
+      - emig(dF,toggle,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL \
+      + emig(dF,toggle,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP
 	  
 # juvenile - littoral
 JL' = fecL*PL - maturation(phiL,JL) - mJ*JL \
       - interact(kL,FL,JL) - interact(cL,PL,JL) \
-      - emig(dJ,betaJ,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL \
-      + emig(dJ,betaJ,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP
+      - emig(dJ,toggle,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL \
+      + emig(dJ,toggle,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP
 	  
 # Adult Predator - pelagic
 PP' = maturation(phiP,JP) - (mP+mu)*PP \
-      - emig(dP,betaP,alphaP, fitPP(FP), fitPL(FL))*PP \
-      + emig(dP,betaP,alphaP, fitPL(FL), fitPP(FP))*PL
+      - emig(dP,toggle,alphaP, fitPP(FP), fitPL(FL))*PP \
+      + emig(dP,toggle,alphaP, fitPL(FL), fitPP(FP))*PL
 
 # Forager - pelagic
 FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + interact(epsP,FP,JP) \
-      - emig(dF,betaF,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP \
-      + emig(dF,betaF,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL
+      - emig(dF,toggle,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP \
+      + emig(dF,toggle,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL
 
 # Juvenile- pelagic
 JP' = fecP*PP - maturation(phiP,JP) - mJ*JP \
       - interact(kP,FP,JP) - interact(cP,PP,JP) \
-      - emig(dJ,betaJ,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP \
-      + emig(dJ,betaJ,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL
+      - emig(dJ,toggle,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP \
+      + emig(dJ,toggle,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL
 
 
 # -------------------------- Parameters ---------------------------------------
@@ -66,9 +66,10 @@ par phiL=1.000, phiP=1.000
 par kL=1.000, kP=1.000, cL=0.017, cP=0.017
 
 par dP=1, dF=1, dJ=1
-par betaP=0.0, betaF=0.0, betaJ=0.0
 par alphaP=5.0, alphaF=5.0, alphaJ=5.0
 par omegap=0.05, omegaf=0.05, omegaj=0.05
+
+par toggle = 1
 
 # -------------------------- Initial conditions -------------------------------
 
