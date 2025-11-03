@@ -11,8 +11,8 @@ type3ff(h,kappa,f) = (h*f*f)/(1+kappa*f*f)
 # Fitness 
 fitPL(f,p) = type3ff(hL,kappaL,f) - omegap*p
 fitPP(f,p) = type3ff(hP,kappaP,f) - omegap*p
-fitFL(f,p,j) = (rL - bL*f) - type3(hL, p, f, kappaL) + epsL*j
-fitFP(f,p,j) = (rP - bP*f) - type3(hP, p, f, kappaP) + epsP*j
+fitFL(f,p,j) = (rL - bL*f) - type3(hL, p, f, kappaL) - omegaf*f
+fitFP(f,p,j) = (rP - bP*f) - type3(hP, p, f, kappaP) - omegaf*f
 fitJL(p,f,j) =  (phiL/(1 + j*j)) - kL*f - cL*p - omegaj*j
 fitJP(p,f,j) =  (phiP/(1 + j*j)) - kP*f - cP*p - omegaj*j
 
@@ -58,7 +58,7 @@ JP' = fecP*PP - maturation(phiP,JP) - mJ*JP \
 par mu=0
 par mP=0.100, mJ=0.100
 par rL=0.400, bL=0.060, hL=1.500, kappaL=0.005,
-par rP=0.400, bP=0.060, hP=1.500, kappaP=0.005 
+par rP=0.200, bP=0.060, hP=1.500, kappaP=0.005 
 par epsL=0.100, epsP=0.100
 par fecL=0.8, fecP=0.8
 par phiL=1.000, phiP=1.000
@@ -66,7 +66,7 @@ par kL=1.2, kP=1.2, cL=0.02, cP=0.02
 
 par dP=0.1, dF=0.1, dJ=0.1
 par alphaP=0,25, alphaF=0.25, alphaJ=0.25 
-par omegap=0.05, omegaf=0.05, omegaj=0.05
+par omegap=0.01, omegaf=0.01, omegaj=0.01
 
 par toggle = 1
 
@@ -86,3 +86,5 @@ init PP=5, FP=5, JP=5
 @ DS=0.0005, DSMIN=0.0001, DSMAX=0.05, NMAX=500 
 @ PARMIN=-0.25, PARMAX=0.5, NORMMAX=20
 @ AUTOXMIN=-0.2, AUTOXMAX=0.5, AUTOYMIN=-0.1, AUTOYMAX=5
+
+#
