@@ -1,22 +1,20 @@
+# --------------------------- Helper Functions --------------------------------
 
+maturation(phi,j) = (phi*j)/(1+j*j)
+type3(h,p,f,kappa) = (h*p*f*f)/(1+kappa*f*f)
+logistic(r,b,f) = r*f - b*f*f
+sig(a) = 1/(1+exp(-a))
 
-# Helper ---------------------------------------------------------------------------
-
-maturation(phi,j)= (phi*j)/(1+j*j)
-type3(h,p,f,kappa)= (h*p*f*f)/(1+kappa*f*f)
-logistic(r,b,f)= r*f - b*f*f
-sig(a)= 1/(1+exp(-a))
-
-fitPL(f)= (hL*f*f)/(1+kappaL*f*f) - omegap
-fitPP(f)= (hP*f*f)/(1+kappaP*f*f) - omegap
-fitFL(f,p)= (rL - bL*f) - (hL*p*f*f)/(1+kappaL*f*f) - omegaf
-fitFP(f,p)= (rP - bP*f) - (hP*p*f*f)/(1+kappaP*f*f) - omegaf
-fitJL(p,f)= (fecL*p) - mJ - kL*f - cL*p - omegaj
-fitJP(p,f)= (fecP*p) - mJ - kP*f - cP*p - omegaj
+fitPL(f)   = (hL*f*f)/(1+kappaL*f*f) - omegap
+fitPP(f)   = (hP*f*f)/(1+kappaP*f*f) - omegap
+fitFL(f,p) = (rL - bL*f) - (hL*p*f*f)/(1+kappaL*f*f) - omegaf
+fitFP(f,p) = (rP - bP*f) - (hP*p*f*f)/(1+kappaP*f*f) - omegaf
+fitJL(p,f) = (fecL*p) - mJ - kL*f - cL*p - omegaj
+fitJP(p,f) = (fecP*p) - mJ - kP*f - cP*p - omegaj
 
 emig(d,beta,alpha,win,wout)= d*(sig(beta*alpha*(wout - win)))
 
-# Equations ------------------------------------------------------------------------
+# -------------------------- Equations ----------------------------------------
 
 PL' = maturation(phiL,JL) - (mP+mu)*PL \
       - emig(dP,betaP,alphaP, fitPL(FL), fitPP(FP))*PL \
@@ -43,7 +41,7 @@ JP' = fecP*PP - maturation(phiP,JP) - mJ*JP - kP*FP*JP - cP*PP*JP \
       + emig(dJ,betaJ,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL
 
 
-# Parameters -----------------------------------------------------------------------
+# -------------------------- Parameters ---------------------------------------
 
 par mu=0
 par mP=0.280, mJ=0.280
@@ -59,18 +57,18 @@ par betaP=0.0, betaF=0.0, betaJ=0.0
 par alphaP=5.0, alphaF=5.0, alphaJ=5.0
 par omegap=0.05, omegaf=0.05, omegaj=0.05
 
-# Initial conditions ---------------------------------------------------------------
+# -------------------------- Initial conditions -------------------------------
 
 init PL=1.0, FL=0.3, JL=0.8
 init PP=1.0, FP=0.3, JP=0.8
 
 @ total=1000, dt=0.1, bounds=1000
 
-# plotting variables ---------------------------------------------------------------
+# ---------------------------plotting variables -------------------------------
 
 @ XP=FL, YP=PL, XLO=0.1, XHIGH=8, YLOW=-0.1, YHIGH=5
 
-# Auto options ---------------------------------------------------------------------
+# ------------------------------- Auto options --------------------------------
 
 # Numeric settings
 @ DS=0.0005, DSMIN=0.0001, DSMAX=0.05, NMAX=500 
