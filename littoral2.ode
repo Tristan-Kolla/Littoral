@@ -1,42 +1,55 @@
 # --------------------------- Helper Functions --------------------------------
 
+# Functional Forms
 maturation(phi,j) = (phi*j)/(1+j*j)
 type3(h,p,f,kappa) = (h*p*f*f)/(1+kappa*f*f)
 logistic(r,b,f) = r*f - b*f*f
 sig(a) = 1/(1+exp(-a))
+interact(a,x,y) = a*x*y
+type3ff(h,kappa,f) = (h*f*f)/(1+kappa*f*f)
 
-fitPL(f)   = (hL*f*f)/(1+kappaL*f*f) - omegap
-fitPP(f)   = (hP*f*f)/(1+kappaP*f*f) - omegap
-fitFL(f,p) = (rL - bL*f) - (hL*p*f*f)/(1+kappaL*f*f) - omegaf
-fitFP(f,p) = (rP - bP*f) - (hP*p*f*f)/(1+kappaP*f*f) - omegaf
+# Fitness 
+fitPL(f) = type3ff(hL,kappaL,f) - omegap
+fitPP(f) = type3ff(hP,kappaP,f) - omegap
+fitFL(f,p) = (rL - bL*f) - type3(hL,p,f,kappaL) - omegaf
+fitFP(f,p) = (rP - bP*f) - type3(hP,p,f,kappaP) - omegaf
 fitJL(p,f) = (fecL*p) - mJ - kL*f - cL*p - omegaj
 fitJP(p,f) = (fecP*p) - mJ - kP*f - cP*p - omegaj
 
+# Movement
 emig(d,beta,alpha,win,wout)= d*(sig(beta*alpha*(wout - win)))
 
-# -------------------------- Equations ----------------------------------------
+# -------------------------- Governing Equations ------------------------------
 
+# Adult Predator - littoral
 PL' = maturation(phiL,JL) - (mP+mu)*PL \
       - emig(dP,betaP,alphaP, fitPL(FL), fitPP(FP))*PL \
       + emig(dP,betaP,alphaP, fitPP(FP), fitPL(FL))*PP
-
-FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + epsL*FL*JL \
+	  
+# Forager - littoral
+FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + interact(epsL,FL,JL) \
       - emig(dF,betaF,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL \
       + emig(dF,betaF,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP
-
-JL' = fecL*PL - maturation(phiL,JL) - mJ*JL - kL*FL*JL - cL*PL*JL \
+	  
+# juvenile - littoral
+JL' = fecL*PL - maturation(phiL,JL) - mJ*JL \
+      - interact(kL,FL,JL) - interact(cL,PL,JL) \
       - emig(dJ,betaJ,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL \
       + emig(dJ,betaJ,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP
-
+	  
+# Adult Predator - pelagic
 PP' = maturation(phiP,JP) - (mP+mu)*PP \
       - emig(dP,betaP,alphaP, fitPP(FP), fitPL(FL))*PP \
       + emig(dP,betaP,alphaP, fitPL(FL), fitPP(FP))*PL
 
-FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + epsP*FP*JP \
+# Forager - pelagic
+FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + interact(epsP,FP,JP) \
       - emig(dF,betaF,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP \
       + emig(dF,betaF,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL
 
-JP' = fecP*PP - maturation(phiP,JP) - mJ*JP - kP*FP*JP - cP*PP*JP \
+# Juvenile- pelagic
+JP' = fecP*PP - maturation(phiP,JP) - mJ*JP \
+      - interact(kP,FP,JP) - interact(cP,PP,JP) \
       - emig(dJ,betaJ,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP \
       + emig(dJ,betaJ,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL
 
@@ -70,7 +83,6 @@ init PP=1.0, FP=0.3, JP=0.8
 
 # ------------------------------- Auto options --------------------------------
 
-# Numeric settings
 @ DS=0.0005, DSMIN=0.0001, DSMAX=0.05, NMAX=500 
 @ PARMIN=-0.25, PARMAX=0.5, NORMMAX=20
 @ AUTOXMIN=-0.2, AUTOXMAX=0.5, AUTOYMIN=-0.1, AUTOYMAX=5
