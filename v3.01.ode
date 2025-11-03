@@ -11,10 +11,10 @@ type3ff(h,kappa,f) = (h*f*f)/(1+kappa*f*f)
 # Fitness 
 fitPL(f,p) = type3ff(hL,kappaL,f) - omegap*p
 fitPP(f,p) = type3ff(hP,kappaP,f) - omegap*p
-fitFL(f,p) = (rL - bL*f) - type3(hL,p,f,kappaL)
-fitFP(f,p) = (rP - bP*f) - type3(hP,p,f,kappaP) 
-fitJL(p,f) = (fecL*p) - mJ - kL*f - cL*p - omegaj
-fitJP(p,f) = (fecP*p) - mJ - kP*f - cP*p - omegaj
+fitFL(f,p,j) = (rL - bL*f) - type3(hL, p, f, kappaL) + epsL*j
+fitFP(f,p,j) = (rP - bP*f) - type3(hP, p, f, kappaP) + epsP*j
+fitJL(p,f,j) =  (phiL/(1 + j*j)) - kL*f - cL*p - omegaj*j
+fitJP(p,f,j) =  (phiP/(1 + j*j)) - kP*f - cP*p - omegaj*j
 
 # Movement
 emig(d,toggle,alpha,win,wout)= d*(sig(toggle*alpha*(wout - win)))
@@ -28,14 +28,14 @@ PL' = maturation(phiL,JL) - (mP+mu)*PL \
 	  
 # Forager - littoral
 FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + interact(epsL,FL,JL) \
-      - emig(dF,toggle,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL \
-      + emig(dF,toggle,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP
+      - emig(dF,toggle,alphaF, fitFL(FL,PL,JL), fitFP(FP,PP,JP))*FL \
+      + emig(dF,toggle,alphaF, fitFP(FP,PP,JP), fitFL(FL,PL,JL))*FP
 	  
 # juvenile - littoral
 JL' = fecL*PL - maturation(phiL,JL) - mJ*JL \
       - interact(kL,FL,JL) - interact(cL,PL,JL) \
-      - emig(dJ,toggle,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL \
-      + emig(dJ,toggle,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP
+      - emig(dJ,toggle,alphaJ, fitJL(PL,FL,JL), fitJP(PP,FP,JP))*JL \
+      + emig(dJ,toggle,alphaJ, fitJP(PP,FP,JP), fitJL(PL,FL,JL))*JP
 	  
 # Adult Predator - pelagic
 PP' = maturation(phiP,JP) - (mP+mu)*PP \
@@ -44,22 +44,21 @@ PP' = maturation(phiP,JP) - (mP+mu)*PP \
 
 # Forager - pelagic
 FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + interact(epsP,FP,JP) \
-      - emig(dF,toggle,alphaF, fitFP(FP,PP), fitFL(FL,PL))*FP \
-      + emig(dF,toggle,alphaF, fitFL(FL,PL), fitFP(FP,PP))*FL
+	  - emig(dF,toggle,alphaF, fitFP(FP,PP,JP), fitFL(FL,PL,JL))*FP \
+      + emig(dF,toggle,alphaF, fitFL(FL,PL,JL), fitFP(FP,PP,JP))*FL
 
 # Juvenile- pelagic
 JP' = fecP*PP - maturation(phiP,JP) - mJ*JP \
       - interact(kP,FP,JP) - interact(cP,PP,JP) \
-      - emig(dJ,toggle,alphaJ, fitJP(PP,FP), fitJL(PL,FL))*JP \
-      + emig(dJ,toggle,alphaJ, fitJL(PL,FL), fitJP(PP,FP))*JL
-
+      - emig(dJ,toggle,alphaJ, fitJP(PP,FP,JP), fitJL(PL,FL,JL))*JP \
+      + emig(dJ,toggle,alphaJ, fitJL(PL,FL,JL), fitJP(PP,FP,JP))*JL
 
 # -------------------------- Parameters ---------------------------------------
 
 par mu=0
 par mP=0.100, mJ=0.100
 par rL=0.400, bL=0.050, hL=1.500, kappaL=0.050
-par rP=0.400, bP=0.050, hP=1.500, kappaP=0.050
+par rP=0.350, bP=0.050, hP=1.500, kappaP=0.050
 par epsL=0.100, epsP=0.100
 par fecL=1.000, fecP=1.000
 par phiL=1.000, phiP=1.000
