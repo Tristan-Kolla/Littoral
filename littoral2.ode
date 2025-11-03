@@ -57,9 +57,9 @@ JP' = fecP*PP - maturation(phiP,JP) - mJ*JP \
 # -------------------------- Parameters ---------------------------------------
 
 par mu=0
-par mP=0.280, mJ=0.280
-par rL=0.500, bL=0.050, hL=1.500, kappaL=0.050
-par rP=0.500, bP=0.050, hP=1.500, kappaP=0.050
+par mP=0.100, mJ=0.100
+par rL=0.400, bL=0.050, hL=1.500, kappaL=0.050
+par rP=0.400, bP=0.050, hP=1.500, kappaP=0.050
 par epsL=0.100, epsP=0.100
 par fecL=1.000, fecP=1.000
 par phiL=1.000, phiP=1.000
@@ -72,8 +72,8 @@ par omegap=0.05, omegaf=0.05, omegaj=0.05
 
 # -------------------------- Initial conditions -------------------------------
 
-init PL=1.0, FL=0.3, JL=0.8
-init PP=1.0, FP=0.3, JP=0.8
+init PL=5, FL=5, JL=5
+init PP=5, FP=5, JP=5
 
 @ total=1000, dt=0.1, bounds=1000
 
