@@ -11,8 +11,8 @@ type3ff(h,kappa,f) = (h*f*f)/(1+kappa*f*f)
 # Fitness 
 fitPL(f,p) = type3ff(hL,kappaL,f) - omegap*p
 fitPP(f,p) = type3ff(hP,kappaP,f) - omegap*p
-fitFL(f,p,j) = (rL - bL*f) - type3(hL, p, f, kappaL) - omegaf*f
-fitFP(f,p,j) = (rP - bP*f) - type3(hP, p, f, kappaP) - omegaf*f
+fitFL(f,p,j) = ((r + deltar) - bL*f) - type3(hL, p, f, kappaL)  - omegaf*f
+fitFP(f,p,j) = ((r - deltar) - bP*f) - type3(hP, p, f, kappaP) - omegaf*f
 fitJL(p,f,j) =  (phiL/(1 + j*j)) - kL*f - cL*p - omegaj*j
 fitJP(p,f,j) =  (phiP/(1 + j*j)) - kP*f - cP*p - omegaj*j
 
@@ -27,7 +27,7 @@ PL' = maturation(phiL,JL) - (mP+mu)*PL \
       + emig(dP,toggle,alphaP, fitPP(FP,PP), fitPL(FL,PL))*PP
 	  
 # Forager - littoral
-FL' = logistic(rL,bL,FL) - type3(hL,PL,FL,kappaL) + interact(epsL,FL,JL) \
+FL' = logistic((r + deltar),bL,FL) - type3(hL,PL,FL,kappaL) + interact(epsL,FL,JL) \
       - emig(dF,toggle,alphaF, fitFL(FL,PL,JL), fitFP(FP,PP,JP))*FL \
       + emig(dF,toggle,alphaF, fitFP(FP,PP,JP), fitFL(FL,PL,JL))*FP
 	  
@@ -43,7 +43,7 @@ PP' = maturation(phiP,JP) - (mP+mu)*PP \
       + emig(dP,toggle,alphaP, fitPL(FL,PL), fitPP(FP,PP))*PL
 
 # Forager - pelagic
-FP' = logistic(rP,bP,FP) - type3(hP,PP,FP,kappaP) + interact(epsP,FP,JP) \
+FP' = logistic((r - deltar),bP,FP) - type3(hP,PP,FP,kappaP) + interact(epsP,FP,JP) \
 	  - emig(dF,toggle,alphaF, fitFP(FP,PP,JP), fitFL(FL,PL,JL))*FP \
       + emig(dF,toggle,alphaF, fitFL(FL,PL,JL), fitFP(FP,PP,JP))*FL
 
@@ -56,9 +56,11 @@ JP' = fecP*PP - maturation(phiP,JP) - mJ*JP \
 # -------------------------- Parameters ---------------------------------------
 
 par mu=0
+par deltar = 0.0
+par r = 0.400
 par mP=0.100, mJ=0.100
-par rL=0.400, bL=0.060, hL=1.500, kappaL=0.005,
-par rP=0.200, bP=0.060, hP=1.500, kappaP=0.005 
+par bL=0.060, hL=1.500, kappaL=0.005,
+par bP=0.060, hP=1.500, kappaP=0.005 
 par epsL=0.100, epsP=0.100
 par fecL=0.8, fecP=0.8
 par phiL=1.000, phiP=1.000
