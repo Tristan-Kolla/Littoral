@@ -23,7 +23,7 @@ fitJL(p,f,j) =  (phiL/(1 + j*j)) - kL*f - cL*p - omegaj*j
 fitJP(p,f,j) =  (phiP/(1 + j*j)) - kP*f - cP*p - omegaj*j
 
 # Movement
-emig(d,toggle,alpha,win,wout)= toggle*d*(sig(alpha*(wout - win)))
+emig(d,toggle,alpha,win,wout)= toggle*d*(sig(beta*alpha*(wout - win)))
 
 # -------------------------- Governing Equations ------------------------------
 
@@ -61,9 +61,10 @@ JP' = fecP*PP - maturation(phiP,JP) - mJ*JP \
 
 # -------------------------- Parameters ---------------------------------------
 
-par mu=0.0
-par deltar = 0
-par deltas = 0
+par mu=0
+par deltar = 0.0
+par deltas = 0.0
+par beta = 1
 par r = 0.400
 par s = 1.500
 par mP=0.100, mJ=0.100
